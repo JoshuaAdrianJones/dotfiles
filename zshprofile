@@ -89,8 +89,7 @@ export PATH=~/anaconda3/bin:$PATH
 alias rvm-prompt=$HOME/.rvm/bin/rvm-prompt
 export PATH="/usr/local/sbin:$PATH"
 
-alias brewup='brew update; brew upgrade; brew prune; brew cleanup; brew doctor; brew cask upgrade; brew cask cleanup; brew cask doctor'
-
+alias brewup='brew update; brew upgrade; brew cleanup; brew doctor; brew cask upgrade; brew cask cleanup; brew cask doctor'
 alias ttc='cd ~/Documents/Google\ Drive/1.Code; clear '
 alias del='rm -rf'
 alias ghub='cd ~;cd Documents/GitHub; clear'
@@ -102,6 +101,11 @@ function lazygit() {
     git commit -a -m "$1"
     git push
 }
+
+function getrep(){
+  git clone https://github.com/JoshuaAdrianJones/$1.git
+}
+
 
 function extChange() {
 for file in *.$1; do mv "$file" "${file%.$1}.$2"; done
