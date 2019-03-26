@@ -1,5 +1,0 @@
-" BASIC SETUP:
-
-set nocompatible
-syntax enable
-filetype plugin on
