@@ -62,7 +62,7 @@ ZSH_THEME="dst"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-  git
+  git brew common-aliases OSX  
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -97,7 +97,7 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 
-
+alias pyserv="python3 -m http.server"
 alias profile="code ~/.zshrc"
 alias ohmyzsh="code ~/.oh-my-zsh"
 
@@ -124,3 +124,5 @@ function getrep(){
   git clone https://github.com/JoshuaAdrianJones/$1.git
 }
 
+function extChange() {
+for file in *.$1; do mv "$file" "${file%.$1}.$2"; done}
