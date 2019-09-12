@@ -11,7 +11,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes (quote (misterioso)))
- '(org-agenda-files nil)
+ '(org-agenda-files
+   (quote
+    ("~/Notes/org-Notes/week37.org" "~/Notes/org-Notes/week36.org" "~/Notes/org-Notes/readinglist.org")))
  '(package-selected-packages (quote (org-pomodoro))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
