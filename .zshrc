@@ -36,7 +36,7 @@ ZSH_THEME="dst"
 # DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
+ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
 # COMPLETION_WAITING_DOTS="true"
@@ -61,6 +61,7 @@ ZSH_THEME="dst"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
+
 plugins=(
   git brew common-aliases OSX  
 )
@@ -97,32 +98,38 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 
-alias pyserv="python3 -m http.server"
-alias profile="code ~/.zshrc"
-alias ohmyzsh="code ~/.oh-my-zsh"
-
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 export PATH=$PATH:$HOME/anaconda/bin
 export PATH=~/anaconda3/bin:$PATH
-alias rvm-prompt=$HOME/.rvm/bin/rvm-prompt
 export PATH="/usr/local/sbin:$PATH"
 
+alias pyserv="python3 -m http.server"
+alias profile="code ~/.zshrc"
+alias ohmyzsh="code ~/.oh-my-zsh"
+alias rvm-prompt=$HOME/.rvm/bin/rvm-prompt
 alias brewup='brew update; brew upgrade; brew cleanup; brew doctor; brew cask upgrade; brew cask cleanup; brew cask doctor'
-alias ttc='cd ~/Documents/Google\ Drive/1.Code; clear '
 alias del='rm -rf'
-alias ghub='cd ~;cd Documents/GitHub; clear'
 alias tree2='tree -d -L 2'
 alias gitup='git add --all'
 
+# git for simple things
 function lazygit() {
+    git add .
+    git commit -a -m "$1"
+    git push origin master
+}
+
+function lazygitlocal() {
     git add .
     git commit -a -m "$1"
     git push
 }
 
+# clone a repo
 function getrep(){
   git clone https://github.com/JoshuaAdrianJones/$1.git
 }
 
+#change the extension of a file
 function extChange() {
 for file in *.$1; do mv "$file" "${file%.$1}.$2"; done}
