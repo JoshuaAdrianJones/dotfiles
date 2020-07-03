@@ -126,7 +126,7 @@ function lazygitlocal() {
 }
 
 # clone a repo
-function getrep(){
+function clone(){
   git clone https://github.com/JoshuaAdrianJones/$1.git
 }
 
