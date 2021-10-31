@@ -1,0 +1,71 @@
+* Snippets from home PC
+
+
+#+begin_src lisp
+   dotspacemacs-additional-packages '(
+                                      nord-theme
+                                      )
+
+#+end_src
+
+#+begin_src 
+   dotspacemacs-default-font '("Source Code Pro"
+                               :size 13
+                               :weight normal
+                               :width normal
+                               :powerline-scale 1.1)
+#+end_src
+
+#+begin_src 
+    dotspacemacs-themes '(nord
+                         spacemacs-dark
+                         spacemacs-light)
+ 
+#+end_src
+
+
+#+begin_src
+(defun dotspacemacs/user-config ()
+
+  "Configuration function for user code.
+This function is called at the very end of Spacemacs initialization after
+layers configuration.
+This is the place where most of your configurations should be done. Unless it is
+explicitly specified that a variable should be set before a package is loaded,
+you should place your code here."
+
+  (setq org-todo-keywords
+        '((sequence "MAYBE" "TODO" "SCHEDULED" "WAITING" "DOING" "|" "DONE")))
+
+  (setq org-superstar-bullet-list '("◉" "◆" "▲" "▶"))
+
+  (setq org-todo-keyword-faces
+        '(("TODO" . (:foreground "GoldenRod" :weight bold))
+          ("MAYBE" . (:foreground "OrangeRed" :weight bold))
+          ("WAITING" . (:foreground "HotPink" :weight bold))
+          ("DONE" . (:foreground "LimeGreen" :weight bold))
+          ("DOING" . (:foreground "LimeGreen" :weight bold))
+          ("SCHEDULED" . (:foreground "DarkOrange" :weight bold))                
+          ))
+
+)
+#+end_src
+
+
+* Snippets from work PC
+
+
+  
+* Snippets from MBP-old
+
+
+
+  
+* Snippets from MBP New
+
+
+
+
+
+  
+* TODO Clean up and remove MBP-old
