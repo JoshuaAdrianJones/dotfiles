@@ -52,20 +52,5 @@ you should place your code here."
 #+end_src
 
 
-* Snippets from work PC
-
-
   
-* Snippets from MBP-old
-
-
-
-  
-* Snippets from MBP New
-
-
-
-
-
-  
-* TODO Clean up and remove MBP-old
+* DONE Clean up and remove MBP-old
