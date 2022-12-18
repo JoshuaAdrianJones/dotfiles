@@ -1,6 +1,5 @@
 * Snippets from home PC
 
-
 #+begin_src lisp
    dotspacemacs-additional-packages '(
                                       nord-theme
@@ -22,7 +21,6 @@
                          spacemacs-light)
  
 #+end_src
-
 
 #+begin_src
 (defun dotspacemacs/user-config ()
@@ -51,6 +49,3 @@ you should place your code here."
 )
 #+end_src
 
-
-  
-* DONE Clean up and remove MBP-old
