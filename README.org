@@ -15,3 +15,15 @@ Add the contents of the vimprofile, emacs or zshprofiles to your respective .zsh
 
 Theme is: Nord-Theme everywhere since I find consistency is helpful and it's a nice muted dark-mode without black-on-white contrast.
 
+** 2024 updates
+
+- Still using MBP21-M1
+- Still using VsCode, only really using emacs for org-mode
+- Terminal is the same
+- No longer using Spacemacs
+- Theme is still nordtheme.
+- I don't really use vim ever, but I do use evil mode in emacs.
+
+https://github.com/nordtheme/visual-studio-code
+https://github.com/nordtheme/iterm2
+https://github.com/nordtheme/emacs

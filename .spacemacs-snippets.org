@@ -1,4 +1,4 @@
-* Snippets from home PC
+* Snippets for org-mode
 
 #+begin_src lisp
    dotspacemacs-additional-packages '(
