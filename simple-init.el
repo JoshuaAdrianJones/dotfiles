@@ -1,4 +1,3 @@
-
 ;;set global stuff
 
 (global-display-line-numbers-mode)
