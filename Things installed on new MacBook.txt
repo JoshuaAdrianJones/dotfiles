@@ -1,0 +1,19 @@
+Things installed on new MacBook
+
+- Spotify
+- Xcode tools
+- Vs code
+- iterm2
+- Home-brew
+- Zsh and ohmyzsh
+- Emacs (mainly for org mode)
+- Obsidian
+- Firefox
+- Chrome
+- Node and typescript
+- Steam 
+- Python environments
+- R language 
+- Nord theme everywhere 
+- Rust
+- Docker???
