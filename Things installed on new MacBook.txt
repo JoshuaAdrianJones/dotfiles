@@ -17,3 +17,35 @@ Things installed on new MacBook
 - Nord theme everywhere 
 - Rust
 - Docker???
+
+* New Macbook Pro 14" M1 set-up
+
+** settings updated
+
+   - tap to click
+   - hot corners (weird that they are in the settings for desktop and screensaver)
+ 
+** software installed (thoughts about using the new M1 and whether stuff is updated to be as easy to install as on intel macs)
+
+   - xcode tools: this was an easy command line prompt
+   - Spotify: strange there's no mac store app for this
+   - Vscode: easy install from MSFT
+   - iterm2: easy install
+     
+     colour scheme: Nord https://www.nordtheme.com/
+     
+     oh-my-zsh theme: dst
+   - Rectangle window manager https://rectangleapp.com/  
+   - Zsh and ohmyzsh: follow the command line prompts
+   - Home-brew: easy install follow the command line prompts
+   - Emacs (mainly for org mode) with Spacemacs
+   
+     brew install emacs
+     
+     delete existing .emacs.d/ folder
+     
+     clone spacemacs folder
+
+   - Firefox (main browser)
+   - Chrome (for chromecast and some dev tools)
+   - Karabiner for key remapping (caps lock -> ESC)
