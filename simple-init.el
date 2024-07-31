@@ -1,5 +1,7 @@
 ;;set global stuff
-
+(setq visible-bell t)  ; Use visual bell instead of audible bell
+(global-visual-line-mode t)
+(setq-default global-visual-line-mode 1)
 (global-display-line-numbers-mode)
 (setq initial-major-mode 'org-mode)
 (global-set-key [f7] (lambda () (interactive) (find-file user-init-file)))
@@ -101,6 +103,7 @@
 			"ft" 'treemacs
 			"t"  'treemacs-select-window  ; put focus on treemacs window
 			"qf" 'kill-buffer-and-window  ; File close
+			"bc" 'kill-this-buffer        ; Buffer close
 			"wc" 'kill-this-buffer        ; Buffer close
 			"ko" 'delete-other-windows    ; Close all other buffers kill-other
 			"ww" 'widen                   ; Widen buffer
@@ -116,6 +119,7 @@
 			"gb" 'magit-branch            ; Manage branches
 			"gr" 'magit-rebase            ; Rebase
 			"wr" 'writeroom-mode          ; Writroom mode
+			"rl" '(load-file user-init-file) ; Re-Load Config
                         ))
 (use-package evil-collection
   :ensure t
