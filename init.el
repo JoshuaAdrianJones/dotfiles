@@ -1,15 +1,42 @@
-;;set global stuff
+;;; init.el --- Personal Emacs Configuration
+;;
+;; Author: Joshua Jones
+;; URL: https://github.com/JoshuaAdrianJones/dotfiles
+;; Keywords: emacs, evil, org-mode, nord-theme
+;;
+;; This file is NOT part of GNU Emacs.
+;;
+;;; Commentary:
+;;
+;; Minimal Emacs configuration focused on:
+;; - Evil mode (Vim keybindings) with leader key ","
+;; - Org mode for notes and task management
+;; - Nord theme for visual consistency
+;; - Magit for Git integration
+;; - Writeroom mode for distraction-free writing
+;;
+;; Primary use: Org mode and writing (VSCode for coding)
+;;
+;;; Code:
+
+;;; BASIC SETTINGS
+
 (setq visible-bell t)  ; Use visual bell instead of audible bell
 (global-visual-line-mode t)
 (setq-default global-visual-line-mode 1)
 (global-display-line-numbers-mode)
 (setq initial-major-mode 'org-mode)
-(global-set-key [f7] (lambda () (interactive) (find-file user-init-file)))
-(global-set-key [f8] 'treemacs)
-;; Set the user-emacs-directory to C:\users\joshu
-(setq user-emacs-directory "C:/users/joshu")
 
-;; set package management
+;; F7: Quick access to init file for editing
+(global-set-key [f7] (lambda () (interactive) (find-file user-init-file)))
+
+;; F8: Toggle Treemacs file browser
+(global-set-key [f8] 'treemacs)
+
+;; Set user directory (macOS default)
+(setq user-emacs-directory "~/.emacs.d/")
+
+;;; PACKAGE MANAGEMENT
 
 ;; Initialize package management
 (require 'package)
@@ -31,7 +58,9 @@
   (require 'use-package))
 (setq use-package-always-ensure t)
 
-;; set specific packages
+;;; ORG MODE CONFIGURATION
+
+;; Log timestamps when completing org-mode tasks
 (setq org-log-done 'time)
 (use-package org-superstar
   :ensure t
@@ -49,7 +78,7 @@
   ;; For example, you can set keybindings, file paths, etc.
 )
 
-; Install and set up magit
+;;; GIT INTEGRATION (MAGIT)
 (use-package magit
   :ensure t
   :config
@@ -57,31 +86,36 @@
   ;; For example, you can set keybindings, display options, etc.
 )
 
-;; dep for write room
+;;; DISTRACTION-FREE WRITING
+
+;; Dependency for writeroom mode
 (use-package visual-fill-column
   :ensure t
   :config
 
   )
 
-
-;; writeroom mode
+;; Writeroom mode: Distraction-free writing environment
 (use-package writeroom-mode
   :ensure t
   :config
-  (setq writeroom-width 120
-	)
+  (setq writeroom-width 120)  ; 120 character width for comfortable reading
   )
 
-(add-hook 'writeroom-mode-hook 'visual-line-mode); when turnin on writeroom-mode, also wrap lines
+;; When turning on writeroom-mode, also wrap lines
+(add-hook 'writeroom-mode-hook 'visual-line-mode)
 
+;;; THEME
 
-;; Install and load the 'nord-theme' package
+;; Install and load the Nord theme
 (use-package nord-theme
   :ensure t
   :config
   (load-theme 'nord t))
 
+;;; EVIL MODE (VIM KEYBINDINGS)
+
+;; Evil: Vim emulation layer with "," as leader key
 (use-package evil
   :ensure t
   :init
@@ -91,11 +125,13 @@
   :config
   (evil-mode 1))
 
+;; Evil leader: Leader key bindings with ","
+;; All leader commands start with "," (comma)
 (use-package evil-leader
   :ensure t
   :config
   (global-evil-leader-mode)
-  ; Define your leader key bindings here
+  ;; Leader key bindings (press "," followed by these keys)
   (evil-leader/set-key "ff" 'find-file
                         "bb" 'switch-to-buffer
                         "bd" 'kill-buffer
@@ -124,6 +160,9 @@
 (use-package evil-collection
   :ensure t
 )
+
+;;; FILE NAVIGATION
+
 (use-package treemacs
   :ensure t
   :config
@@ -170,8 +209,9 @@
   (evil-org-agenda-set-keys))
 (evil-collection-init 'magit)
 
+;;; CUSTOM SETTINGS
 
-;; set org faces
+;; Org todo keyword configuration
 (setq org-todo-keywords
       '((sequence "MAYBE" "TODO" "DOING" "WAITING" "DONE")))
 
