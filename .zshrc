@@ -1,9 +1,38 @@
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
+# ============================================================================
+# .zshrc - Zsh Configuration
+# ============================================================================
+# Author: Joshua Jones
+# Environment: macOS M1, Oh My Zsh
+# Theme: dst
+# Last Updated: 2024
+#
+# This configuration includes:
+# - Oh My Zsh framework with curated plugins
+# - Custom aliases for navigation and git
+# - Utility functions (brewup, enc/dec, clone, whisper)
+# - Language environments (Ruby, Haskell, OCaml, Deno)
+# - Nord theme consistency across terminal tools
+# ============================================================================
+
+# === LANGUAGE ENVIRONMENTS ===
+
+# Ruby: rbenv initialization
 eval "$(rbenv init - zsh)"
 
-# Path to your oh-my-zsh installation.
+# === OH MY ZSH CONFIGURATION ===
+
+# Path to your oh-my-zsh installation
+# NOTE: Update 'josh' to your username
 export ZSH="/Users/josh/.oh-my-zsh"
+
+# === ENVIRONMENT VARIABLES ===
+
+# Deno: JavaScript/TypeScript runtime
+export DENO_INSTALL="/Users/josh/.deno"
+export PATH="$DENO_INSTALL/bin:$PATH"
+
+# Ollama: Local LLM server
+export OLLAMA_API_BASE=http://127.0.0.1:11434
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -53,69 +82,102 @@ ZSH_THEME="dst"
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
+# === PLUGINS ===
+
 # Which plugins would you like to load?
 # Standard plugins can be found in $ZSH/plugins/
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git brew common-aliases macos)
 source $ZSH/oh-my-zsh.sh
 
-# User configuration
+# === CUSTOM ALIASES ===
 
-# export MANPATH="/usr/local/man:$MANPATH"
+# Configuration shortcuts
+alias setup="code ~/.zshrc"
+alias zshconfig="code ~/.zshrc"
+alias config="code ~/.zshrc"
 
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-alias zshconfig="emacs ~/.zshrc"
+# GitHub utilities
 alias myrepos="curl https://api.github.com/users/JoshuaAdrianJones/repos | grep -w clone_url"
-alias clone(){git clone https://github.com/JoshuaAdrianJones/$1.git }
-alias del(){rm -rf $1}
-alias ic="cd /Users/josh/iCloud/com~apple~CloudDocs"
 
-function brewup(){
-    brew autoremove
-    brew cleanup
-    brew update
-    brew upgrade
-    brew autoremove
-    brew cleanup
+# Navigation shortcuts
+alias ic="cd /Users/josh/iCloud/com~apple~CloudDocs"
+alias proj="cd ~/Projects"
+alias dl="cd ~/Downloads"
+alias docs="cd ~/Documents"
+
+# Git shortcuts
+alias status="git status"
+alias gp="git pull"
+alias gpp="git push"
+
+# === UTILITY FUNCTIONS ===
+
+# clone: Quick clone from personal GitHub
+# Usage: clone <repo-name>
+# NOTE: Update JoshuaAdrianJones to your GitHub username
+function clone() {
+    git clone https://github.com/JoshuaAdrianJones/$1.git;
 }
 
-# Encrypt a file with AES256 encoding
+# del: Remove files/directories with rm -rf
+# Usage: del <file-or-directory>
+# WARNING: Use carefully! This permanently deletes files.
+function del() {
+    rm -rf $1;
+}
+
+# whisper: Launch voice transcription menubar app
+# Runs in background, detached from terminal
+function whisper() {
+    nohup python3 /Users/josh/code/whisper_shortcut_osx/whisper_menubar.py > /dev/null 2>&1 &;
+}
+
+# brewup: Complete Homebrew maintenance cycle
+# Runs cleanup, update, upgrade in one command
+function brewup(){
+    brew cleanup
+    brew autoremove
+    brew update
+    brew upgrade
+    brew cleanup
+    brew autoremove
+}
+
+# enc: Encrypt file with GPG AES256
+# Usage: enc <filename>
+# Output: <filename>.data (encrypted)
 function enc () {
-    if [[ -n "$@" ]] 
+    if [[ -n "$@" ]]
     then
         gpg --output $1.data --symmetric --cipher-algo AES256 $1
     fi
 }
 
-# decrypt a file
+# dec: Decrypt GPG encrypted file
+# Usage: dec <filename.data>
+# Output: decrypted_<filename.data>
 function dec () {
-    if [[ -n "$@" ]] 
+    if [[ -n "$@" ]]
     then
         gpg --output decypted_$1 --decrypt $1
     fi
 }
 
+# === ADDITIONAL LANGUAGE ENVIRONMENTS ===
 
+# Haskell: GHCup environment
+[ -f "/Users/josh/.ghcup/env" ] && source "/Users/josh/.ghcup/env"
 
-# GHCup is the main installer for the general purpose language Haskell.
-[ -f "/Users/josh/.ghcup/env" ] && source "/Users/josh/.ghcup/env" # ghcup-env
-
-# opam configuration: opam is a source-based package manager for OCaml.
+# OCaml: opam package manager
 [[ ! -r /Users/josh/.opam/opam-init/init.zsh ]] || source /Users/josh/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
+
+# Python: pipx for isolated CLI tool installation
+export PATH="$PATH:/Users/josh/.local/bin"
+
+# === AUTO-START SERVICES ===
+
+# Automatically add SSH key for GitHub on shell startup
+ssh-add ~/.ssh/github
+
