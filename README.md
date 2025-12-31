@@ -10,7 +10,51 @@ Configuration files for Zsh, Emacs, and iTerm2 with Nord theme consistency.
 2. Copy sections you find useful to your own dotfiles
 3. Adapt paths and personal settings to match your setup
 
-**Note**: This repository is designed for selective copying, not automated installation.
+**Note**: This repository supports both automated installation and selective copying.
+
+## Automated Setup (New!)
+
+For fresh macOS machines, you can now use the automated setup script:
+
+### Quick Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/JoshuaAdrianJones/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+
+# Run full installation
+./setup.sh
+
+# (Optional) Configure macOS system preferences
+./setup.sh --configure-macos
+
+# See what would be installed without running
+./setup.sh --dry-run
+```
+
+The setup script will:
+- Install Xcode Command Line Tools, Homebrew, and Oh My Zsh
+- Install all development tools and applications
+- Customize and symlink dotfiles (.zshrc, init.el)
+- Set up language environments (Ruby, Rust, Haskell, Node, Python)
+- Create necessary directories
+
+### Updating
+
+```bash
+cd ~/dotfiles
+
+# Update all software
+./update.sh
+
+# Update with cleanup
+./update.sh --cleanup
+```
+
+### Manual Setup
+
+You can still manually copy configurations as before (see [SETUP.md](SETUP.md) for details).
 
 ## What's Included
 
