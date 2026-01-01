@@ -42,53 +42,7 @@ CONFIGURE_MACOS=false
 DRY_RUN=false
 
 # Tracking
-FAILED_PACKAGES=()
-INSTALLED_FORMULAE_COUNT=0
-INSTALLED_CASKS_COUNT=0
-
-# Package lists
-FORMULAE=(
-    git
-    git-lfs
-    node
-    python
-    rbenv
-    ruby-build
-    emacs
-    gnupg
-    jq
-    wget
-    cmake
-    deno
-    ffmpeg
-    imagemagick
-    flac
-    lame
-    opam
-    r
-)
-
-CASKS=(
-    iterm2
-    visual-studio-code
-    rectangle
-    karabiner-elements
-    obsidian
-    firefox
-    google-chrome
-    vlc
-    spotify
-    appcleaner
-    hammerspoon
-    slack
-    docker
-    ollama
-)
-
-OPTIONAL_CASKS=(
-    steam
-    youtube-downloader
-)
+BREW_BUNDLE_SUCCESS=false
 
 # ============================================================================
 # UTILITY FUNCTIONS
@@ -315,78 +269,36 @@ install_prerequisites() {
 # PACKAGE INSTALLATION
 # ============================================================================
 
-install_homebrew_formulae() {
-    log_info "Installing Homebrew formulae (this may take a while)..."
+install_homebrew_packages() {
+    log_info "Installing Homebrew packages from Brewfile..."
 
-    local installed_list=""
-    if command -v brew &>/dev/null && [[ $DRY_RUN == false ]]; then
-        installed_list=$(brew list --formula 2>/dev/null || echo "")
+    if [[ ! -f "$DOTFILES_DIR/Brewfile" ]]; then
+        log_error "Brewfile not found at $DOTFILES_DIR/Brewfile"
+        return 1
     fi
 
-    for formula in "${FORMULAE[@]}"; do
-        if echo "$installed_list" | grep -q "^${formula}$"; then
-            log_success "$formula (already installed)"
-            ((INSTALLED_FORMULAE_COUNT++))
-        elif [[ $DRY_RUN == true ]]; then
-            log_info "[DRY RUN] Would install: $formula"
-        else
-            log_info "Installing $formula..."
-            if brew install "$formula" &>/dev/null; then
-                log_success "$formula installed"
-                ((INSTALLED_FORMULAE_COUNT++))
-            else
-                log_warning "Failed to install $formula"
-                FAILED_PACKAGES+=("$formula")
-            fi
-        fi
-    done
-
-    echo ""
-}
-
-install_homebrew_casks() {
-    log_info "Installing Homebrew casks (GUI applications)..."
-
-    local installed_list=""
-    if command -v brew &>/dev/null && [[ $DRY_RUN == false ]]; then
-        installed_list=$(brew list --cask 2>/dev/null || echo "")
+    if [[ $DRY_RUN == true ]]; then
+        log_info "[DRY RUN] Would run: brew bundle install --file=$DOTFILES_DIR/Brewfile"
+        log_info "[DRY RUN] Brewfile contents:"
+        cat "$DOTFILES_DIR/Brewfile" | grep -v '^#' | grep -v '^$'
+        return 0
     fi
 
-    for cask in "${CASKS[@]}"; do
-        if echo "$installed_list" | grep -q "^${cask}$"; then
-            log_success "$cask (already installed)"
-            ((INSTALLED_CASKS_COUNT++))
-        elif [[ $DRY_RUN == true ]]; then
-            log_info "[DRY RUN] Would install: $cask"
-        else
-            log_info "Installing $cask..."
-            if brew install --cask "$cask" &>/dev/null; then
-                log_success "$cask installed"
-                ((INSTALLED_CASKS_COUNT++))
-            else
-                log_warning "Failed to install $cask (may not be available)"
-                FAILED_PACKAGES+=("$cask")
-            fi
-        fi
-    done
+    log_info "Checking which packages need to be installed..."
 
-    # Try optional casks
-    log_info "Attempting to install optional applications..."
-    for cask in "${OPTIONAL_CASKS[@]}"; do
-        if echo "$installed_list" | grep -q "^${cask}$"; then
-            log_success "$cask (already installed)"
-            ((INSTALLED_CASKS_COUNT++))
-        elif [[ $DRY_RUN == true ]]; then
-            log_info "[DRY RUN] Would try to install: $cask (optional)"
-        else
-            if brew install --cask "$cask" &>/dev/null; then
-                log_success "$cask installed"
-                ((INSTALLED_CASKS_COUNT++))
-            else
-                log_info "$cask not available (optional, skipping)"
-            fi
-        fi
-    done
+    # Install packages from Brewfile
+    if brew bundle install --file="$DOTFILES_DIR/Brewfile" --no-lock; then
+        log_success "Homebrew packages installed from Brewfile"
+        BREW_BUNDLE_SUCCESS=true
+    else
+        log_warning "Some packages may have failed to install"
+        BREW_BUNDLE_SUCCESS=false
+    fi
+
+    # Show summary of installed packages
+    local formulae_count=$(brew list --formula 2>/dev/null | wc -l | tr -d ' ')
+    local casks_count=$(brew list --cask 2>/dev/null | wc -l | tr -d ' ')
+    log_info "Installed: $formulae_count formulae, $casks_count casks"
 
     echo ""
 }
@@ -715,8 +627,10 @@ print_summary() {
     echo ""
 
     log_info "Installed:"
-    echo "  - Homebrew packages: $INSTALLED_FORMULAE_COUNT"
-    echo "  - GUI applications: $INSTALLED_CASKS_COUNT"
+    local formulae_count=$(brew list --formula 2>/dev/null | wc -l | tr -d ' ')
+    local casks_count=$(brew list --cask 2>/dev/null | wc -l | tr -d ' ')
+    echo "  - Homebrew packages: $formulae_count formulae"
+    echo "  - GUI applications: $casks_count casks"
     if command -v ruby &>/dev/null; then
         echo "  - Ruby: $(ruby --version | cut -d' ' -f2)"
     fi
@@ -731,16 +645,15 @@ print_summary() {
     log_info "Configuration:"
     echo "  - .zshrc linked to ~/.zshrc"
     echo "  - init.el linked to ~/.emacs.d/init.el"
+    echo "  - Brewfile: $DOTFILES_DIR/Brewfile"
     if [[ -d "$BACKUP_DIR" ]] && [[ -n "$(ls -A "$BACKUP_DIR" 2>/dev/null)" ]]; then
         echo "  - Backups saved to $BACKUP_DIR"
     fi
     echo ""
 
-    if [[ ${#FAILED_PACKAGES[@]} -gt 0 ]]; then
-        log_warning "Failed Packages (optional):"
-        for pkg in "${FAILED_PACKAGES[@]}"; do
-            echo "  - $pkg"
-        done
+    if [[ $BREW_BUNDLE_SUCCESS == false ]]; then
+        log_warning "Some packages may have failed to install"
+        log_info "Run 'brew bundle check --file=$DOTFILES_DIR/Brewfile' to see what's missing"
         echo ""
     fi
 
@@ -786,8 +699,7 @@ main() {
     preflight_checks
     detect_environment
     install_prerequisites
-    install_homebrew_formulae
-    install_homebrew_casks
+    install_homebrew_packages
     customize_zshrc
     customize_init_el
     create_symlinks
