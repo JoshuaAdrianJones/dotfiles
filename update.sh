@@ -109,12 +109,18 @@ update_homebrew() {
         return 1
     fi
 
+    if [[ ! -f "$DOTFILES_DIR/Brewfile" ]]; then
+        log_warning "Brewfile not found at $DOTFILES_DIR/Brewfile"
+        log_info "Falling back to standard brew upgrade..."
+    fi
+
     log_info "Updating Homebrew..."
 
     if [[ $DRY_RUN == true ]]; then
         log_info "[DRY RUN] Would run: brew update"
         log_info "[DRY RUN] Would run: brew upgrade"
         if [[ $CLEANUP == true ]]; then
+            log_info "[DRY RUN] Would run: brew bundle cleanup --file=$DOTFILES_DIR/Brewfile"
             log_info "[DRY RUN] Would run: brew cleanup --prune=all"
         fi
         return 0
@@ -128,7 +134,30 @@ update_homebrew() {
         log_warning "Homebrew update failed"
     fi
 
-    # Upgrade all packages
+    # Upgrade packages from Brewfile
+    if [[ -f "$DOTFILES_DIR/Brewfile" ]]; then
+        log_info "Installing/upgrading packages from Brewfile..."
+
+        # Check what needs to be installed
+        local missing_count=0
+        if ! brew bundle check --file="$DOTFILES_DIR/Brewfile" &>/dev/null; then
+            missing_count=1
+        fi
+
+        # Install any missing packages from Brewfile
+        if brew bundle install --file="$DOTFILES_DIR/Brewfile" --no-lock; then
+            if [[ $missing_count -gt 0 ]]; then
+                log_success "Brewfile packages synchronized"
+                UPDATED_ITEMS+=("Brewfile packages")
+            else
+                log_success "All Brewfile packages already installed"
+            fi
+        else
+            log_warning "Some Brewfile package installations may have failed"
+        fi
+    fi
+
+    # Upgrade all packages (including those not in Brewfile)
     log_info "Upgrading Homebrew packages..."
     local outdated=$(brew outdated --formula | wc -l | tr -d ' ')
 
@@ -162,7 +191,19 @@ update_homebrew() {
 
     # Cleanup if requested
     if [[ $CLEANUP == true ]]; then
-        log_info "Cleaning up Homebrew..."
+        # Clean up packages not in Brewfile
+        if [[ -f "$DOTFILES_DIR/Brewfile" ]]; then
+            log_info "Removing packages not in Brewfile..."
+            if brew bundle cleanup --file="$DOTFILES_DIR/Brewfile" --force; then
+                log_success "Removed packages not in Brewfile"
+                UPDATED_ITEMS+=("Brewfile cleanup")
+            else
+                log_warning "Brewfile cleanup had warnings"
+            fi
+        fi
+
+        # General Homebrew cleanup
+        log_info "Cleaning up Homebrew caches and old versions..."
         if brew cleanup --prune=all &>/dev/null; then
             log_success "Homebrew cleanup complete"
             UPDATED_ITEMS+=("Homebrew cleanup")
